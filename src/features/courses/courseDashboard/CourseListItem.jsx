@@ -2,12 +2,13 @@ import React from 'react';
 import { Segment, Item, Icon, List, Button } from 'semantic-ui-react';
 import CourseListAttendee from './CourseListAttendee';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import {deleteCourse} from '../courseActions';
+
+
 import {format} from 'date-fns';
+import { deleteCourseinFirestore } from '../../../app/firestore/firestoreService';
 
 export default function CourseListItem({ course}) {
-  const dispatch = useDispatch();
+
 
   return (
     <Segment.Group>
@@ -37,7 +38,7 @@ export default function CourseListItem({ course}) {
       <Segment clearing>
         <div>{course.description}</div>
         <Button
-          onClick={() => dispatch(deleteCourse(course.id))}
+          onClick={() => deleteCourseinFirestore(course.id)}
           color='red'
           floated='right'
           content='Delete'

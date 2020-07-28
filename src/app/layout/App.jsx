@@ -9,6 +9,7 @@ import CourseForm from '../../features/courses/courseForm/CourseForm';
 import Sandbox from '../../features/sandbox/Sandbox';
 import ModalManager from '../common/modals/ModalManager';
 import {ToastContainer} from 'react-toastify';
+import ErrorComponent from '../common/errors/ErrorComponent';
 
 export default function App() {
   const {key} = useLocation();
@@ -28,6 +29,7 @@ export default function App() {
               <Route exact path='/sandbox' component={Sandbox} />
               <Route path='/courses/:id' component={CourseDetailedPage} />
               <Route path={['/createCourse', '/manage/:id']} component={CourseForm} key={key} />
+              <Route path='/error' component={ErrorComponent} />
             </Container>
           </>
         )}
