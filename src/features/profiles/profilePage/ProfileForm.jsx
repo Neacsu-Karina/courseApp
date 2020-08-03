@@ -1,6 +1,6 @@
 import React from 'react';
-import { Formik } from 'formik';
-import { Form, Button } from 'semantic-ui-react';
+import { Formik, Form } from 'formik';
+import { Button } from 'semantic-ui-react';
 import MyTextInput from '../../../app/common/form/MyTextInput';
 import MyTextArea from '../../../app/common/form/MyTextArea';
 import * as Yup from 'yup';
@@ -19,6 +19,7 @@ export default function ProfileForm({profile}){
             })}
             onSubmit={async (values, {setSubmitting}) => {
                 try{
+                    
                     await updateUserProfile(values);
                 } catch(error) {
                     toast.error(error.message);
