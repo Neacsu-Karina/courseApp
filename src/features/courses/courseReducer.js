@@ -1,7 +1,8 @@
-import { CREATE_COURSE, UPDATE_COURSE, DELETE_COURSE, FETCH_COURSES } from './courseConstants';
+import { CREATE_COURSE, UPDATE_COURSE, DELETE_COURSE, FETCH_COURSES, LISTEN_TO_COURSE_CHAT, CLEAR_COMMENTS } from './courseConstants';
 
 const initialState = {
   courses: [],
+  comments: []
 };
 
 export default function courseReducer(state = initialState, { type, payload }) {
@@ -29,6 +30,17 @@ export default function courseReducer(state = initialState, { type, payload }) {
           ...state,
           courses: payload
         }
+        case LISTEN_TO_COURSE_CHAT:
+          return{
+            ...state,
+            comments:payload,
+          };
+          case CLEAR_COMMENTS:
+            return{
+              ...state,
+              comments:[],
+            };
+
     default:
       return state;
   }

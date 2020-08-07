@@ -38,7 +38,7 @@ export default function CourseDetailedPage({ match }) {
       <Grid.Column width={10}>
         <CourseDetailedHeader course={course} isEnrolled={isEnrolled} isTeacher={isTeacher} />
         <CourseDetailedInfo course={course} />
-        <CourseDetailedChat />
+        <CourseDetailedChat courseId={course.id}/>
       </Grid.Column>
       <Grid.Column width={6}>
         <CourseDetailedSidebar enrolledStudents={course?.enrolledStudents} teacherUid={course.teacherUid}/>

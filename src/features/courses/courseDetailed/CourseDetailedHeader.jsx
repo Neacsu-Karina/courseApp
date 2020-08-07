@@ -66,7 +66,7 @@ export default function CourseDetailedHeader({
                 />
                 <p>{format(course.date, "MMMM d, yyyy h:mm a")}</p>
                 <p>
-                 Teached by <strong><Link to={`/profile/${course.teacherUid}`}>{course.teachedBy}</Link> </strong>
+                 Teached by <strong><Link to={`/profile/${course.teacherUid}`}>{course.teacher}</Link> </strong>
                 </p>
               </Item.Content>
             </Item>

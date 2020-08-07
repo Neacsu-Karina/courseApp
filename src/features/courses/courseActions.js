@@ -1,4 +1,4 @@
-import { CREATE_COURSE, UPDATE_COURSE, DELETE_COURSE, FETCH_COURSES } from './courseConstants';
+import { CREATE_COURSE, UPDATE_COURSE, DELETE_COURSE, FETCH_COURSES, LISTEN_TO_COURSE_CHAT } from './courseConstants';
 import {asyncActionStart, asyncActionFinish, asyncActionError} from '../../app/async/asyncReducer';
 import {fetchSampleData} from '../../app/api/mockApi';
 
@@ -40,5 +40,12 @@ export function deleteCourse(courseId) {
     return {
         type: DELETE_COURSE,
         payload: courseId
+    }
+}
+
+export function listenToCourseChat(comments) {
+    return {
+        type: LISTEN_TO_COURSE_CHAT,
+        payload: comments
     }
 }
