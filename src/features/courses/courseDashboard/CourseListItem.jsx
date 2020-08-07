@@ -1,6 +1,6 @@
 import React from 'react';
 import { Segment, Item, Icon, List, Button } from 'semantic-ui-react';
-import CourseListAttendee from './CourseListAttendee';
+import CourseListStudentsEnrolled from './CourseListStudentsEnrolled';
 import { Link } from 'react-router-dom';
 
 
@@ -15,10 +15,10 @@ export default function CourseListItem({ course}) {
       <Segment>
         <Item.Group>
           <Item>
-            <Item.Image size='tiny' circular src={course.domainPhotoURL} />
+            <Item.Image size='tiny' circular src={course.teacherPhotoURL} />
             <Item.Content>
               <Item.Header content={course.title} />
-              <Item.Description>Teached by {course.teacher}</Item.Description>
+              <Item.Description>Teached by <Link to={`/profile/${course.teacherUid}`}>{course.teacher}</Link></Item.Description>
             </Item.Content>
           </Item>
         </Item.Group>
@@ -30,8 +30,8 @@ export default function CourseListItem({ course}) {
       </Segment>
       <Segment secondary>
         <List horizontal>
-          {course.enrolledStudents.map((attendee) => (
-            <CourseListAttendee key={attendee.id} attendee={attendee} />
+          {course.enrolledStudents.map((enrolledStudent) => (
+            <CourseListStudentsEnrolled key={enrolledStudent.id} enrolledStudent={enrolledStudent} />
           ))}
         </List>
       </Segment>

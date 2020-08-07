@@ -20,7 +20,7 @@ export const sampleData = [
             }
         },
         teachedBy: 'Bob',
-        domainPhotoURL: 'https://randomuser.me/api/portraits/men/20.jpg',
+        teacherPhotoURL: 'https://randomuser.me/api/portraits/men/20.jpg',
         enrolledStudents: [
             {
                 id: 'a',
@@ -55,7 +55,7 @@ export const sampleData = [
             }
         },
         teachedBy: 'Tom',
-        domainPhotoURL: 'https://randomuser.me/api/portraits/men/22.jpg',
+        teacherPhotoURL: 'https://randomuser.me/api/portraits/men/22.jpg',
         enrolledStudents: [
             {
                 id: 'a',

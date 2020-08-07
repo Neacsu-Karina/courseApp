@@ -13,10 +13,14 @@ import { Redirect } from "react-router-dom";
 
 export default function CourseDetailedPage({ match }) {
   const dispatch = useDispatch();
+  const {currentUser} = useSelector((state) => state.auth);
   const course = useSelector((state) =>
     state.course.courses.find((e) => e.id === match.params.id)
   );
   const { loading, error} = useSelector((state) => state.async);
+  const isTeacher = course?.teacherUid === currentUser.uid;
+  const isEnrolled = course?.enrolledStudents?.some(a=>a.id === currentUser.uid);
+  
 
   useFirestoreDoc({
     query: () => listenToCourseFromFirestore(match.params.id),
@@ -32,12 +36,12 @@ export default function CourseDetailedPage({ match }) {
   return (
     <Grid>
       <Grid.Column width={10}>
-        <CourseDetailedHeader course={course} />
+        <CourseDetailedHeader course={course} isEnrolled={isEnrolled} isTeacher={isTeacher} />
         <CourseDetailedInfo course={course} />
         <CourseDetailedChat />
       </Grid.Column>
       <Grid.Column width={6}>
-        <CourseDetailedSidebar enrolledStudents={course?.enrolledStudents} />
+        <CourseDetailedSidebar enrolledStudents={course?.enrolledStudents} teacherUid={course.teacherUid}/>
       </Grid.Column>
     </Grid>
   );

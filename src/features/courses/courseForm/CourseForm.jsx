@@ -3,7 +3,7 @@ import { Segment, Header, Button, Confirm } from "semantic-ui-react";
 
 import { Link, Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import {  listenToCourses } from "../courseActions";
+import { listenToCourses } from "../courseActions";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import MyTextInput from "../../../app/common/form/MyTextInput";
@@ -12,19 +12,24 @@ import MySelectInput from "../../../app/common/form/MySelectInput";
 import { domainData } from "../../../app/api/domainOptions";
 import MyDateInput from "../../../app/common/form/MyDateInput";
 import useFirestoreDoc from "../../../app/hooks/useFirestoreDoc";
-import { listenToCourseFromFirestore, updateCourseInFirestore, addCourseToFirestore, cancelCourseToggle } from "../../../app/firestore/firestoreService";
+import {
+  listenToCourseFromFirestore,
+  updateCourseInFirestore,
+  addCourseToFirestore,
+  cancelCourseToggle,
+} from "../../../app/firestore/firestoreService";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { toast } from "react-toastify";
 
 export default function CourseForm({ match, history }) {
   const dispatch = useDispatch();
-  const[loadingCancel, setLoadingCancel] = useState(false);
-  const[confirmOpen, setConfirmOpen] = useState(false);
+  const [loadingCancel, setLoadingCancel] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const selectedCourse = useSelector((state) =>
     state.course.courses.find((e) => e.id === match.params.id)
   );
 
-  const {loading, error} = useSelector(state => state.async);
+  const { loading, error } = useSelector((state) => state.async);
 
   const initialValues = selectedCourse ?? {
     title: "",
@@ -40,53 +45,45 @@ export default function CourseForm({ match, history }) {
     date: Yup.string().required(),
   });
 
-  async function handleCancelToggle(course){
+  async function handleCancelToggle(course) {
     setConfirmOpen(false);
     setLoadingCancel(true);
-    try{
+    try {
       await cancelCourseToggle(course);
       setLoadingCancel(false);
-
-    }catch(error){
+    } catch (error) {
       setLoadingCancel(true);
       toast.error(error.message);
     }
   }
 
-
   useFirestoreDoc({
-    shouldExecute: !!match.params.id, 
+    shouldExecute: !!match.params.id,
     query: () => listenToCourseFromFirestore(match.params.id),
     data: (course) => dispatch(listenToCourses([course])),
     deps: [match.params.id, dispatch],
   });
 
+  if (loading) return <LoadingComponent content="Loading course..." />;
 
-
-  if (loading )
-    return <LoadingComponent content="Loading course..." />;
-
-
-  if(error) return <Redirect to='/error' />
+  if (error) return <Redirect to="/error" />;
 
   return (
     <Segment clearing>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={async (values, {setSubmitting}) => {
-          try{
+        onSubmit={async (values, { setSubmitting }) => {
+          try {
             selectedCourse
-            ? await updateCourseInFirestore(values)
-            : await addCourseToFirestore(values);
+              ? await updateCourseInFirestore(values)
+              : await addCourseToFirestore(values);
             setSubmitting(false);
-          history.push("/courses");
-
-          }catch(error){
+            history.push("/courses");
+          } catch (error) {
             toast.error(error.message);
             setSubmitting(false);
           }
-          
         }}
       >
         {({ isSubmitting, dirty, isValid, values }) => (
@@ -102,6 +99,7 @@ export default function CourseForm({ match, history }) {
             <Header sub color="teal" content="Course Location Details" />
 
             <MyDateInput
+              autoComplete="off"
               name="date"
               placeholderText="Course date"
               timeFormat="HH:mm"
@@ -109,16 +107,20 @@ export default function CourseForm({ match, history }) {
               timeCaption="time"
               dateFormat="MMMM d, yyyy h:mm a"
             />
-            {selectedCourse &&
-             <Button
-              loading={loadingCancel}
-              type='button'
-              floated="left"
-              color ={selectedCourse.isCancelled ? 'green': 'red'}
-             
-              content={selectedCourse.isCancelled ? 'Reactivate Course Enrolling' : 'Cancel Course Enrolling'}
-              onClick={()=> setConfirmOpen(true)}
-            />}
+            {selectedCourse && (
+              <Button
+                loading={loadingCancel}
+                type="button"
+                floated="left"
+                color={selectedCourse.isCancelled ? "green" : "red"}
+                content={
+                  selectedCourse.isCancelled
+                    ? "Reactivate Course Enrolling"
+                    : "Cancel Course Enrolling"
+                }
+                onClick={() => setConfirmOpen(true)}
+              />
+            )}
 
             <Button
               loading={isSubmitting}
@@ -140,11 +142,14 @@ export default function CourseForm({ match, history }) {
         )}
       </Formik>
       <Confirm
-      content={selectedCourse?.isCancelled ? 'This will reactivate your course enrolling - are you sure?' :
-      'This will cancel your course enrolling - are you sure?'}
-      open={confirmOpen}
-      onCancel={()=> setConfirmOpen(false)}
-      onConfirm ={()=> handleCancelToggle(selectedCourse)}
+        content={
+          selectedCourse?.isCancelled
+            ? "This will reactivate your course enrolling - are you sure?"
+            : "This will cancel your course enrolling - are you sure?"
+        }
+        open={confirmOpen}
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={() => handleCancelToggle(selectedCourse)}
       />
     </Segment>
   );

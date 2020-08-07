@@ -5,7 +5,7 @@ import ProfileContent from './ProfileContent';
 import { useSelector, useDispatch } from 'react-redux';
 import useFirestoreDoc from '../../../app/hooks/useFirestoreDoc';
 import { getUserProfile } from '../../../app/firestore/firestoreService';
-import{ listenToSelectedUserProfile} from '../ProfileActions';
+import{ listenToSelectedUserProfile} from '../profileActions';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
 
 export default function ProfilePage({match}){

@@ -8,7 +8,7 @@ import {
   deletePhotoFromCollection,
 } from "../../../app/firestore/firestoreService";
 import { useDispatch, useSelector } from "react-redux";
-import { listenToUserPhotos } from "../ProfileActions";
+import { listenToUserPhotos } from "../profileActions";
 import { toast } from "react-toastify";
 import { deleteFromFirebaseStorage } from "../../../app/firestore/firebaseService";
 
