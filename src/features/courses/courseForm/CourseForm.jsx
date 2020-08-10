@@ -3,7 +3,7 @@ import { Segment, Header, Button, Confirm } from "semantic-ui-react";
 
 import { Link, Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { listenToCourses } from "../courseActions";
+import {  listenToSelectedCourse } from "../courseActions";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import MyTextInput from "../../../app/common/form/MyTextInput";
@@ -25,9 +25,7 @@ export default function CourseForm({ match, history }) {
   const dispatch = useDispatch();
   const [loadingCancel, setLoadingCancel] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const selectedCourse = useSelector((state) =>
-    state.course.courses.find((e) => e.id === match.params.id)
-  );
+  const { selectedCourse } = useSelector((state) => state.course);
 
   const { loading, error } = useSelector((state) => state.async);
 
@@ -60,7 +58,7 @@ export default function CourseForm({ match, history }) {
   useFirestoreDoc({
     shouldExecute: !!match.params.id,
     query: () => listenToCourseFromFirestore(match.params.id),
-    data: (course) => dispatch(listenToCourses([course])),
+    data: (course) => dispatch(listenToSelectedCourse(course)),
     deps: [match.params.id, dispatch],
   });
 

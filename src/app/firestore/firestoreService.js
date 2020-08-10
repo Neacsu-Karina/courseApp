@@ -21,10 +21,10 @@ export function dataFromSnapshot(snapshot) {
   };
 }
 
-export function listenToCoursesFromFirestore(predicate) {
+export function fetchCoursesFromFirestore(predicate, limit, lastDocSnapshot= null) {
   const user = firebase.auth().currentUser;
 
-  let coursesRef = db.collection("courses").orderBy("date");
+  let coursesRef = db.collection("courses").orderBy("date").startAfter(lastDocSnapshot).limit(limit);
   switch (predicate.get("filter")) {
     case "isGoing":
       return coursesRef
@@ -35,7 +35,7 @@ export function listenToCoursesFromFirestore(predicate) {
         .where("teacherUid", "==", user.uid)
         .where("date", ">=", predicate.get("startDate"));
     default:
-      return coursesRef.where("date", ">=", predicate.get("startDate"));
+      return coursesRef;
   }
 }
 
@@ -132,10 +132,35 @@ export function getUserPhotos(userUid) {
 
 export async function setMainPhoto(photo) {
   const user = firebase.auth().currentUser;
+  
+  const courseDocQuery =db.collection('courses')
+  .where('enrolledStudentIds', 'array-contains', user.uid)
+  
+
+  const batch=db.batch();
+  batch.update(db.collection('users').doc(user.uid), {
+    photoURL: photo.url,
+  });
   try {
-    await db.collection("users").doc(user.uid).update({
-      photoURL: photo.url,
-    });
+    const coursesQuerySnap = await courseDocQuery.get();
+    for(let i=0; i<coursesQuerySnap.docs.length; i++){
+      let courseDoc = coursesQuerySnap.docs[i];
+      if(courseDoc.data().teacherUid === user.uid){
+        batch.update(coursesQuerySnap.docs[i].ref, {
+          teacherPhotoURL: photo.url,
+        });
+      }
+      batch.update(coursesQuerySnap.docs[i].ref, {
+        enrolledStudents: courseDoc.data().enrolledStudents.filter((enrolledStudent) => {
+          if (enrolledStudent.id === user.uid) {
+            enrolledStudent.photoURL = photo.url;
+          }
+          return enrolledStudent;
+        }),
+      });
+    }
+
+    await batch.commit();
     return await user.updateProfile({
       photoURL: photo.url,
     });

@@ -1,18 +1,19 @@
-import React from "react";
-import { Grid } from "semantic-ui-react";
+import React, { useEffect, useState } from "react";
+import { Grid,  Loader } from "semantic-ui-react";
 import CourseList from "./CourseList";
 import { useSelector, useDispatch } from "react-redux";
 import CourseListItemPlaceholder from "./CourseListItemPlaceholder";
 import CourseFilters from "./CourseFilters";
-import { listenToCoursesFromFirestore } from "../../../app/firestore/firestoreService";
-import { listenToCourses } from "../courseActions";
-import useFirestoreCollection from "../../../app/hooks/useFirestoreCollection";
-import { useState } from "react";
+import {  fetchCourses, clearCourses} from "../courseActions";
+
 
 export default function CourseDashboard() {
+  const limit = 2;
   const dispatch = useDispatch();
-  const { courses } = useSelector((state) => state.course);
+  const { courses, moreCourses } = useSelector((state) => state.course);
   const { loading } = useSelector((state) => state.async);
+  const [lastDocSnapshot, setLastDocSnapshot]=useState(null);
+  const [loadingInitial, setLoadingInitial]=useState(false);
   const [predicate, setPredicate] = useState(
     new Map([
       ["startDate", new Date()],
@@ -21,25 +22,42 @@ export default function CourseDashboard() {
   );
 
   function handleSetPredicate(key, value) {
+    dispatch(clearCourses());
+    setLastDocSnapshot(null);
     setPredicate(new Map(predicate.set(key, value)));
   }
 
-  useFirestoreCollection({
-    query: () => listenToCoursesFromFirestore(predicate),
-    data: (courses) => dispatch(listenToCourses(courses)),
-    deps: [dispatch, predicate],
-  });
+  useEffect(() => {
+    setLoadingInitial(true);
+    dispatch(fetchCourses(predicate, limit)).then((lastVisible)=>{
+      setLastDocSnapshot(lastVisible);
+      setLoadingInitial(false);
+
+    });
+    return()=>{
+      dispatch(clearCourses())
+    }
+    
+  }, [dispatch, predicate])
+
+  function handleFetchNextCourses(){
+    dispatch(fetchCourses(predicate, limit, lastDocSnapshot)).then((lastVisible) => {
+      setLastDocSnapshot(lastVisible);
+    })
+  }
 
   return (
     <Grid>
       <Grid.Column width={10}>
-        {loading && (
+        {loadingInitial && (
           <>
             <CourseListItemPlaceholder />
             <CourseListItemPlaceholder />
           </>
         )}
-        <CourseList courses={courses} />
+        <CourseList courses={courses} getNextCourses={handleFetchNextCourses} loading={loading} moreCourses={moreCourses}/>
+        
+      
       </Grid.Column>
       <Grid.Column width={6}>
         <CourseFilters
@@ -48,6 +66,9 @@ export default function CourseDashboard() {
           loading={loading}
         />
       </Grid.Column>
+        <Grid.Column width={10}>
+          <Loader active={loading} />
+        </Grid.Column>
     </Grid>
   );
 }
