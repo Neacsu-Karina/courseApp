@@ -2,7 +2,7 @@ import React from 'react';
 import CourseDashboard from '../../features/courses/courseDashboard/CourseDashboard';
 import NavBar from '../../features/nav/NavBar';
 import { Container } from 'semantic-ui-react';
-import { Route, useLocation } from 'react-router-dom';
+import {Route, useLocation } from 'react-router-dom';
 import HomePage from '../../features/home/HomePage';
 import CourseDetailedPage from '../../features/courses/courseDetailed/CourseDetailedPage';
 import CourseForm from '../../features/courses/courseForm/CourseForm';
@@ -14,6 +14,7 @@ import AccountPage from '../../features/auth/AccountPage';
 import { useSelector } from 'react-redux';
 import LoadingComponent from './LoadingComponent';
 import ProfilePage from '../../features/profiles/profilePage/ProfilePage';
+import PrivateRoute from './PrivateRoute';
 
 export default function App() {
   const {key} = useLocation();
@@ -34,9 +35,10 @@ export default function App() {
               <Route exact path='/courses' component={CourseDashboard} />
               <Route exact path='/sandbox' component={Sandbox} />
               <Route path='/courses/:id' component={CourseDetailedPage} />
-              <Route path={['/createCourse', '/manage/:id']} component={CourseForm} key={key} />
+              <PrivateRoute
+               path={['/createCourse', '/manage/:id']} component={CourseForm} key={key} />
               <Route path='/account' component={AccountPage} />
-              <Route path='/profile/:id' component={ProfilePage} />
+              <PrivateRoute path='/profile/:id' component={ProfilePage} />
               <Route path='/error' component={ErrorComponent} />
             </Container>
           </>

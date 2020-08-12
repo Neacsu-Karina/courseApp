@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Segment, Header, Button, Confirm } from "semantic-ui-react";
 
 import { Link, Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import {  listenToSelectedCourse } from "../courseActions";
+import {  listenToSelectedCourse, clearSelectedCourse } from "../courseActions";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import MyTextInput from "../../../app/common/form/MyTextInput";
@@ -21,11 +21,16 @@ import {
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { toast } from "react-toastify";
 
-export default function CourseForm({ match, history }) {
+export default function CourseForm({ match, history, location }) {
   const dispatch = useDispatch();
   const [loadingCancel, setLoadingCancel] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const { selectedCourse } = useSelector((state) => state.course);
+
+  useEffect(()=>{
+    if(location.pathname !== 'createCourse') return;
+    dispatch(clearSelectedCourse());
+  }, [dispatch, location.pathname] )
 
   const { loading, error } = useSelector((state) => state.async);
 
@@ -56,7 +61,7 @@ export default function CourseForm({ match, history }) {
   }
 
   useFirestoreDoc({
-    shouldExecute: !!match.params.id,
+    shouldExecute: match.params.id !== selectedCourse?.id && location.pathname!=='/createCourse',
     query: () => listenToCourseFromFirestore(match.params.id),
     data: (course) => dispatch(listenToSelectedCourse(course)),
     deps: [match.params.id, dispatch],
@@ -69,6 +74,7 @@ export default function CourseForm({ match, history }) {
   return (
     <Segment clearing>
       <Formik
+      enableReinitialize
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async (values, { setSubmitting }) => {

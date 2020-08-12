@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 
 import {format} from 'date-fns';
-import { deleteCourseinFirestore } from '../../../app/firestore/firestoreService';
+
 
 export default function CourseListItem({ course}) {
 
@@ -34,15 +34,10 @@ export default function CourseListItem({ course}) {
             <CourseListStudentsEnrolled key={enrolledStudent.id} enrolledStudent={enrolledStudent} />
           ))}
         </List>
-      </Segment>
-      <Segment clearing>
+      </Segment> 
+       <Segment clearing>
         <div>{course.description}</div>
-        <Button
-          onClick={() => deleteCourseinFirestore(course.id)}
-          color='red'
-          floated='right'
-          content='Delete'
-        />
+        
         <Button
           as={Link} to={`/courses/${course.id}`}
           color='teal'

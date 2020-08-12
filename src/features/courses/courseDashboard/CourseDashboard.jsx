@@ -4,46 +4,38 @@ import CourseList from "./CourseList";
 import { useSelector, useDispatch } from "react-redux";
 import CourseListItemPlaceholder from "./CourseListItemPlaceholder";
 import CourseFilters from "./CourseFilters";
-import {  fetchCourses, clearCourses} from "../courseActions";
+import {  fetchCourses} from "../courseActions";
+import { RETAIN_STATE } from "../courseConstants";
 
 
 export default function CourseDashboard() {
   const limit = 2;
   const dispatch = useDispatch();
-  const { courses, moreCourses } = useSelector((state) => state.course);
+  const { courses, moreCourses, filter, startDate, lastVisible, retainState } = useSelector((state) => state.course);
   const { loading } = useSelector((state) => state.async);
-  const [lastDocSnapshot, setLastDocSnapshot]=useState(null);
+ 
   const [loadingInitial, setLoadingInitial]=useState(false);
-  const [predicate, setPredicate] = useState(
-    new Map([
-      ["startDate", new Date()],
-      ["filter", "all"],
-    ])
-  );
 
-  function handleSetPredicate(key, value) {
-    dispatch(clearCourses());
-    setLastDocSnapshot(null);
-    setPredicate(new Map(predicate.set(key, value)));
-  }
+    
+
+ 
 
   useEffect(() => {
+    if(retainState) return;
     setLoadingInitial(true);
-    dispatch(fetchCourses(predicate, limit)).then((lastVisible)=>{
-      setLastDocSnapshot(lastVisible);
+    dispatch(fetchCourses(filter, startDate, limit)).then((lastVisible)=>{
+   
       setLoadingInitial(false);
 
     });
     return()=>{
-      dispatch(clearCourses())
+      dispatch({type: RETAIN_STATE})
     }
     
-  }, [dispatch, predicate])
+  }, [dispatch, filter, startDate, retainState]);
 
   function handleFetchNextCourses(){
-    dispatch(fetchCourses(predicate, limit, lastDocSnapshot)).then((lastVisible) => {
-      setLastDocSnapshot(lastVisible);
-    })
+    dispatch(fetchCourses(filter, startDate, limit, lastVisible))
   }
 
   return (
@@ -61,8 +53,7 @@ export default function CourseDashboard() {
       </Grid.Column>
       <Grid.Column width={6}>
         <CourseFilters
-          predicate={predicate}
-          setPredicate={handleSetPredicate}
+          
           loading={loading}
         />
       </Grid.Column>

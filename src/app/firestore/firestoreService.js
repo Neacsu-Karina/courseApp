@@ -21,21 +21,21 @@ export function dataFromSnapshot(snapshot) {
   };
 }
 
-export function fetchCoursesFromFirestore(predicate, limit, lastDocSnapshot= null) {
+export function fetchCoursesFromFirestore(filter, startDate, limit, lastDocSnapshot= null) {
   const user = firebase.auth().currentUser;
 
   let coursesRef = db.collection("courses").orderBy("date").startAfter(lastDocSnapshot).limit(limit);
-  switch (predicate.get("filter")) {
+  switch (filter) {
     case "isGoing":
       return coursesRef
         .where("enrolledStudentIds", "array-contains", user.uid)
-        .where("date", ">=", predicate.get("startDate"));
+        .where("date", ">=", startDate);
     case "isTeacher":
       return coursesRef
         .where("teacherUid", "==", user.uid)
-        .where("date", ">=", predicate.get("startDate"));
+        .where("date", ">=", startDate);
     default:
-      return coursesRef;
+      return coursesRef.where("date", ">=", startDate)
   }
 }
 
@@ -88,6 +88,11 @@ export function setUserProfileData(user) {
 export function getUserProfile(userId) {
   return db.collection("users").doc(userId);
 }
+
+// export function getTeacher(userId){
+//   return db.collection("teachers").doc(userId);
+// }
+
 
 export async function updateUserProfile(profile) {
   const user = firebase.auth().currentUser;

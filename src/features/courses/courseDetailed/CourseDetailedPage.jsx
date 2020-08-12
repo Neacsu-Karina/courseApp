@@ -17,9 +17,9 @@ export default function CourseDetailedPage({ match }) {
   const { currentUser } = useSelector((state) => state.auth);
   const course = useSelector((state) => state.course.selectedCourse);
   const { loading, error } = useSelector((state) => state.async);
-  const isTeacher = course?.teacherUid === currentUser.uid;
+  const isTeacher = course?.teacherUid === currentUser?.uid;
   const isEnrolled = course?.enrolledStudents?.some(
-    (a) => a.id === currentUser.uid
+    (a) => a.id === currentUser?.uid
   );
 
   useFirestoreDoc({
