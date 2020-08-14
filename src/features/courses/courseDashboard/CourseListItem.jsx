@@ -1,50 +1,25 @@
-import React from 'react';
-import { Segment, Item, Icon, List, Button } from 'semantic-ui-react';
-import CourseListStudentsEnrolled from './CourseListStudentsEnrolled';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Card, Image } from "semantic-ui-react";
 
+import { Link } from "react-router-dom";
 
-import {format} from 'date-fns';
+import { format } from "date-fns";
 
-
-export default function CourseListItem({ course}) {
-
-
+export default function CourseListItem({ course }) {
   return (
-    <Segment.Group>
-      <Segment>
-        <Item.Group>
-          <Item>
-            <Item.Image size='tiny' circular src={course.teacherPhotoURL} />
-            <Item.Content>
-              <Item.Header content={course.title} />
-              <Item.Description>Teached by <Link to={`/profile/${course.teacherUid}`}>{course.teacher}</Link></Item.Description>
-            </Item.Content>
-          </Item>
-        </Item.Group>
-      </Segment>
-      <Segment>
-        <span>
-          <Icon name='clock' /> {format(course.date, 'MMMM d, yyyy h:mm a')}
-        </span>
-      </Segment>
-      <Segment secondary>
-        <List horizontal>
-          {course.enrolledStudents.map((enrolledStudent) => (
-            <CourseListStudentsEnrolled key={enrolledStudent.id} enrolledStudent={enrolledStudent} />
-          ))}
-        </List>
-      </Segment> 
-       <Segment clearing>
-        <div>{course.description}</div>
-        
-        <Button
-          as={Link} to={`/courses/${course.id}`}
-          color='teal'
-          floated='right'
-          content='View'
+    <Card.Group itemsPerRow={1}>
+      <Card as={Link} to={`/courses/${course.id}`} key={course.id}>
+        <Image
+          src={`/assets/domainImages/${course.domain}.jpg`}
+          style={{ minHeight: 100, objectFit: "cover" }}
         />
-      </Segment>
-    </Segment.Group>
+        <Card.Content>
+          <Card.Header content={course.title} textAlign="center" />
+           <Card.Meta textAlign="center">
+            <p> (Data cand a fost creat cursul)</p>
+          </Card.Meta> 
+        </Card.Content>
+      </Card>
+    </Card.Group>
   );
 }

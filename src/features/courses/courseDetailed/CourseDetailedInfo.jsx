@@ -6,7 +6,7 @@ import {format} from 'date-fns';
 export default function CourseDetailedInfo({course}) {
     
     return (
-        <Segment.Group>
+       <Segment.Group>
         <Segment attached="top">
             <Grid>
                 <Grid.Column width={1}>
@@ -15,23 +15,28 @@ export default function CourseDetailedInfo({course}) {
                 <Grid.Column width={15}>
                     <p>{course.description}</p>
                 </Grid.Column>
-            </Grid>
-        </Segment>
-        <Segment attached>
-            <Grid verticalAlign="middle">
-                <Grid.Column width={1}>
-                    <Icon name="calendar" size="large" color="teal"/>
-                </Grid.Column>
-                <Grid.Column width={15}>
-                    <span>{format(course.date, 'MMMM d, yyyy h:mm a')}</span>
-                </Grid.Column>
-            </Grid>
-        </Segment>
-        <Segment attached>
-            <Grid verticalAlign="middle">
-            </Grid>
-        </Segment>
-    </Segment.Group>
+                </Grid>
+</Segment>
+<Segment>
+    <p>(Lista fisiere)</p>
+</Segment>
+                </Segment.Group>
+            
+        // </Segment>
+        // <Segment attached>
+        //      <Grid verticalAlign="middle">
+        //         <Grid.Column width={1}>
+        //             <Icon name="calendar" size="large" color="teal"/>
+        //         </Grid.Column>
+        //         <Grid.Column width={15}>
+        //             <span>{format(course.date, 'MMMM d, yyyy h:mm a')}</span>
+        //         </Grid.Column> 
+        //     </Grid> 
+        
+        // <Segment attached>
+        //     <Grid verticalAlign="middle">
+        // </Segment> 
+   
     
     )
 }

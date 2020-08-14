@@ -39,6 +39,7 @@ export function fetchCoursesFromFirestore(filter, startDate, limit, lastDocSnaps
   }
 }
 
+
 export function listenToCourseFromFirestore(courseId) {
   return db.collection("courses").doc(courseId);
 }

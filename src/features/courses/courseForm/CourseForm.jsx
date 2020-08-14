@@ -17,14 +17,15 @@ import {
   updateCourseInFirestore,
   addCourseToFirestore,
   cancelCourseToggle,
+  deleteCourseinFirestore,
 } from "../../../app/firestore/firestoreService";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { toast } from "react-toastify";
 
-export default function CourseForm({ match, history, location }) {
+export default function CourseForm({ match, history, location,course }) {
   const dispatch = useDispatch();
-  const [loadingCancel, setLoadingCancel] = useState(false);
-  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [setLoadingCancel] = useState(false);
+  const [ setConfirmOpen] = useState(false);
   const { selectedCourse } = useSelector((state) => state.course);
 
   useEffect(()=>{
@@ -100,9 +101,9 @@ export default function CourseForm({ match, history, location }) {
               options={domainData}
             />
             <MyTextArea name="description" placeholder="Description" rows={3} />
-            <Header sub color="teal" content="Course Location Details" />
+            {/* <Header sub color="teal" content="Course Location Details" /> */}
 
-            <MyDateInput
+            {/* <MyDateInput
               autoComplete="off"
               name="date"
               placeholderText="Course date"
@@ -110,20 +111,16 @@ export default function CourseForm({ match, history, location }) {
               showTimeSelect
               timeCaption="time"
               dateFormat="MMMM d, yyyy h:mm a"
-            />
+            /> */}
             {selectedCourse && (
-              <Button
-                loading={loadingCancel}
-                type="button"
-                floated="left"
-                color={selectedCourse.isCancelled ? "green" : "red"}
-                content={
-                  selectedCourse.isCancelled
-                    ? "Reactivate Course Enrolling"
-                    : "Cancel Course Enrolling"
-                }
-                onClick={() => setConfirmOpen(true)}
-              />
+               <Button
+               onClick={() => deleteCourseinFirestore(course.id)}
+               as={Link}
+               to='/courses'
+               color='red'
+               floated='left'
+               content='Delete'
+             />
             )}
 
             <Button
@@ -145,7 +142,7 @@ export default function CourseForm({ match, history, location }) {
           </Form>
         )}
       </Formik>
-      <Confirm
+      {/* <Confirm
         content={
           selectedCourse?.isCancelled
             ? "This will reactivate your course enrolling - are you sure?"
@@ -154,7 +151,7 @@ export default function CourseForm({ match, history, location }) {
         open={confirmOpen}
         onCancel={() => setConfirmOpen(false)}
         onConfirm={() => handleCancelToggle(selectedCourse)}
-      />
+      /> */}
     </Segment>
   );
 }

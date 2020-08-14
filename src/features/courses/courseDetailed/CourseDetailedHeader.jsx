@@ -73,7 +73,7 @@ export default function CourseDetailedHeader({
                     content={course.title}
                     style={{ color: "white" }}
                   />
-                  <p>{format(course.date, "MMMM d, yyyy h:mm a")}</p>
+                  {/* <p>{format(course.date, "MMMM d, yyyy h:mm a")}</p> */}
                   <p>
                     Teached by{" "}
                     <strong>

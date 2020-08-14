@@ -7,7 +7,7 @@ export default function HomePage({history}) {
             <Container>
                 <Header as='h1' inverted>
                     <Image size='massive' src='/assets/logo.png' style={{marginBottom: 12}} />
-                    Re-vents
+                    CourseApp
                 </Header>
                 <Button onClick={() => history.push('/courses')} size='huge' inverted>
                     Get started
